@@ -292,6 +292,189 @@ Mutable sets offer in addition methods to add, remove, or update elements, which
 \end{center}
 
 
+\subsection{Performance Characteristics}
+\begingroup
+\setlength{\tabcolsep}{1pt}
+\begin{center}
+\captionof{table}{Performance characteristics of sequence types}
+%\begin{tabular}{@{}l@{\hskip 2pt}c@{\hskip 2pt}c@{\hskip 2pt}c@{\hskip 2pt}c@{\hskip 2pt}c@{\hskip 2pt}c@{\hskip 2pt}c@{}}
+\begin{tabular}{@{}lccccccc@{}}
+\hline\noalign{\smallskip}
+ & \textbf{head} & \textbf{tail} & \textbf{apply} & \textbf{update} & \textbf{prepend} & \textbf{append} & \textbf{insert}\\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+\textbf{immutable} &&&&&&& \\	
+\texttt{List} & C & C & L & L & C & L & - \\
+\texttt{Stream} & C & C & L & L & C & L & - \\
+\texttt{Vector} & eC & eC & eC & eC & eC & eC & - \\
+\texttt{Stack} & C & C & L & L & C & C & L \\
+\texttt{Queue} & aC & aC & L & L & L & C & - \\
+\texttt{Range} & C & C & C & - & - & - & - \\
+\texttt{String} & C & L & C & L & L & L & - \\
+\noalign{\smallskip}\hline
+\end{tabular}
+\raggedright{\tiny{Reference: \url{http://docs.scala-lang.org/overviews/collections/performance-characteristics.html}}}
+\end{center}
+\endgroup
+
+\begingroup
+\setlength{\tabcolsep}{1pt}
+\begin{center}
+\begin{tabular}{@{}lccccccc@{}}
+\hline\noalign{\smallskip}
+ & \textbf{head} & \textbf{tail} & \textbf{apply} & \textbf{update} & \textbf{prepend} & \textbf{append} & \textbf{insert}\\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+\textbf{mutable} &&&&&&& \\				
+\texttt{ArrayBuffer} & C & L & C & C & L & aC & L \\
+\texttt{ListBuffer} & C & L & L & L & C & C & L \\
+\texttt{StringBuilder} & C & L & C & C & L & aC & L \\
+\texttt{MutableList} & C & L & L & L & C & C & L \\
+\texttt{Queue} & C & L & L & L & C & C & L \\
+\texttt{ArraySeq} & C & L & C & C & - & - & - \\
+\texttt{Stack} & C & L & L & L & C & L & L \\
+\texttt{ArrayStack} & C & L & C & C & aC & L & L \\
+\texttt{Array} & C & L & C & C & - & - & - \\
+\noalign{\smallskip}\hline
+\end{tabular}
+\raggedright{\tiny{Reference: \url{http://docs.scala-lang.org/overviews/collections/performance-characteristics.html}}}
+\end{center}
+\endgroup
+
+\begin{center}
+\captionof{table}{Performance characteristics of set and map types}
+\begin{tabular}{@{}lcccc@{}}
+\hline\noalign{\smallskip}
+ & \textbf{lookup} & \textbf{add} & \textbf{remove} & \textbf{min} \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+\textbf{immutable} &&&& \\
+\texttt{HashSet/HashMap} & eC & eC & eC & L \\
+\texttt{TreeSet/TreeMap} & Log & Log & Log & Log \\
+\texttt{BitSet} & C & L & L & $eC^1$ \\
+\texttt{ListMap} & L & L & L & L \\
+\textbf{mutable} &&&& \\
+\texttt{HashSet/HashMap} & eC & eC & eC & L \\
+\texttt{WeakHashMap} & eC & eC & eC & L \\
+\texttt{BitSet} & C & aC & C & $eC^1$ \\
+\texttt{TreeSet} & Log & Log & Log & Log \\
+\noalign{\smallskip}\hline
+\multicolumn{5}{c}{\small{Footnote 1: Assuming bits are densely packed.}}
+\end{tabular}
+\end{center}
+
+The entries in these two tables are explained as follows:
+
+\begin{tabular}{@{}lp{7cm}@{}}
+C & The operation takes (fast) constant time. \\
+eC & The operation takes effectively constant time, but this might depend on some assumptions such as maximum length of a vector or distribution of hash keys. \\
+aC & The operation takes amortized constant time. Some invocations of the operation might take longer, but if many operations are performed on average only constant time per operation is taken. \\
+Log & The operation takes time proportional to the logarithm of the collection size. \\
+L & The operation is linear, that is it takes time proportional to the collection size. \\
+- & The operation is not supported.
+\end{tabular}
+
+
+\section{Scala Parallel Collections}
+
+
+\subsection{Creating a Parallel Collection}
+Two ways to create a parallel collection: \texttt{new} and \texttt{par}.
+
+
+\subsection{Semantics}
+Conceptually, Scala’s parallel collections framework parallelizes an operation on a parallel collection by recursively “splitting” a given collection, applying an operation on each partition of the collection in parallel, and re-“combining” all of the results that were completed in parallel.
+
+These concurrent, and “out-of-order” semantics of parallel collections lead to the following two implications:
+\begin{enumerate}
+\item Side-effecting operations can lead to non-determinism
+\item Non-associative operations lead to non-determinism
+\end{enumerate}
+
+
+\subsection{Concrete Parallel Collection Classes}
+\texttt{mutable.ParArray}, \texttt{immutable.ParVector}, \texttt{immutable.ParRange}, \texttt{mutable.ParHashSet}, \texttt{mutable.ParHashMap}, \texttt{mutable.ParTrieMap}
+
+
+\subsection{Performance characteristics}
+\begingroup
+\setlength{\tabcolsep}{1pt}
+\begin{center}
+\captionof{table}{Performance characteristics of sequence types}
+\begin{tabular}{@{}lccccccc@{}}
+\hline\noalign{\smallskip}
+ & \textbf{head} & \textbf{tail} & \textbf{apply} & \textbf{update} & \textbf{prepend} & \textbf{append} & \textbf{insert}\\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+\texttt{ParArray} & C & L & C & C & L & L & L \\
+\texttt{ParVector} & eC & eC & eC & eC & eC & eC & - \\
+\texttt{ParRange} & C & C & C & - & - & - & - \\
+\noalign{\smallskip}\hline
+\end{tabular}
+\raggedright{\tiny{\url{http://docs.scala-lang.org/overviews/parallel-collections/concrete-parallel-collections.html}}}
+\end{center}
+\endgroup
+
+\begin{center}
+\captionof{table}{Performance characteristics of set and map types}
+\begin{tabular}{@{}lcccc@{}}
+\hline\noalign{\smallskip}
+ & \textbf{lookup} & \textbf{add} & \textbf{remove} \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+\textbf{immutable} &&& \\
+\texttt{ParHashSet/ParHashMap} & eC & eC & eC \\
+\textbf{mutable} &&& \\
+\texttt{ParHashSet/ParHashMap} & C & C & C \\
+\texttt{ParTrieMap} & eC & eC & eC \\
+\noalign{\smallskip}\hline
+\end{tabular}
+\end{center}
+
+
+\subsection{Parallel Collection Conversions}
+Every sequential collection can be converted to its parallel variant using the \texttt{par} method. Certain sequential collections have a direct parallel counterpart. For these collections the conversion is efficient– it occurs in constant time, since both the sequential and the parallel collection have the same data-structural representation (one exception is mutable hash maps and hash sets which are slightly more expensive to convert the first time \texttt{par} is called, but subsequent invocations of par take constant time). It should be noted that for mutable collections, changes in the sequential collection are visible in its parallel counterpart if they share the underlying data-structure.
+
+\begin{center}
+\captionof{table}{Sequential collections and their direct parallel counterparts}
+\begin{tabular}{@{}ll@{}}
+\hline\noalign{\smallskip}
+\textbf{Sequential} & \textbf{Parallel} \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+\textbf{mutable} & \\
+\texttt{Array} & \texttt{ParArray} \\
+\texttt{HashMap} & \texttt{ParHashMap} \\
+\texttt{HashSet} & \texttt{ParHashSet} \\
+\texttt{TrieMap} & \texttt{ParTrieMap} \\
+\textbf{immutable} & \\
+\texttt{Vector} & \texttt{ParVector} \\
+\texttt{Range} & \texttt{ParRange} \\
+\texttt{HashMap} & \texttt{ParHashMap} \\
+\texttt{HashSet} & \texttt{ParHashSet} \\
+\noalign{\smallskip}\hline
+\end{tabular} \\
+\raggedright{\tiny{Source: \url{http://docs.scala-lang.org/overviews/parallel-collections/conversions.html}}}
+\end{center}
+
+Other collections, such as lists, queues or streams, are inherently sequential in the sense that the elements must be accessed one after the other. These collections are converted to their parallel variants by copying the elements into a similar parallel collection. For example, a functional list is converted into a standard immutable parallel sequence, which is a parallel vector.
+
+Every parallel collection can be converted to its sequential variant using the seq method. Converting a parallel collection to a sequential collection is always efficient– it takes constant time. Calling seq on a mutable parallel collection yields a sequential collection which is backed by the same store– updates to one collection will be visible in the other one.
+
+
+\subsection{Architecture of the Parallel Collections Library}
+Two core abstractions: \texttt{Splitter}s and \texttt{Combiner}s.
+
+\textbf{Splitter}
+\begin{verbatim}
+trait Splitter[T] extends Iterator[T] {
+    def split: Seq[Splitter[T]]
+}
+\end{verbatim}
+
+\textbf{Combiner}
+\begin{verbatim}
+trait Combiner[Elem, To] extends Builder[Elem, To] {
+    def combine(other: Combiner[Elem, To]): Combiner[Elem, To]
+}
+\end{verbatim}
+
+
+
 \rule{0.3\linewidth}{0.25pt}
 \scriptsize
 
