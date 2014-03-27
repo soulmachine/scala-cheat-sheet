@@ -7,7 +7,6 @@
 \usepackage{graphicx} % standard LaTeX graphics tool when including figure files
 \graphicspath{{images/}}
 \usepackage{caption}
-\usepackage{multirow}
 
 % To make this come out properly in landscape mode, do one of the following
 % 1.
@@ -163,7 +162,7 @@
 \textbf{View} & \texttt{xs.view, xs view (from, to)}\\
 \noalign{\smallskip}\hline
 \end{tabular}
-Reference: \url{http://docs.scala-lang.org/overviews/collections/trait-traversable.html}
+\raggedright{\tiny{Reference: \url{http://docs.scala-lang.org/overviews/collections/trait-traversable.html}}}
 \end{center}
 
 
@@ -183,7 +182,7 @@ All methods in this trait are defined in terms of an an abstract method, \texttt
 \textbf{Comparison} & \texttt{xs sameElements ys}\\
 \noalign{\smallskip}\hline
 \end{tabular}
-Reference: \url{http://docs.scala-lang.org/overviews/collections/trait-iterable.html}
+\raggedright{\tiny{Reference: \url{http://docs.scala-lang.org/overviews/collections/trait-iterable.html}}}
 \end{center}
 
 In the inheritance hierarchy below \texttt{Iterable} you find three traits: \texttt{Seq}, \texttt{Set}, and \texttt{Map}. A common aspect of these three traits is that they all implement the \texttt{PartialFunction} trait with its \texttt{apply} and \texttt{isDefinedAt} methods. However, the way each trait implements \texttt{PartialFunction} differs.
@@ -209,10 +208,8 @@ All methods in this trait are defined in terms of an an abstract method, \texttt
 \textbf{Multiset} & \texttt{xs intersect ys, xs union ys, xs diff ys, xs.distinct}\\
 \noalign{\smallskip}\hline
 \end{tabular}
-Reference: \url{http://docs.scala-lang.org/overviews/collections/seqs.html}
+\raggedright{\tiny{Reference: \url{http://docs.scala-lang.org/overviews/collections/seqs.html}}}
 \end{center}
-
-Trait \texttt{Seq} has two subtraits \texttt{LinearSeq}, and \texttt{IndexedSeq}. These do not add any new operations, but each offers different performance characteristics: A linear sequence has efficient \texttt{head} and \texttt{tail} operations, whereas an indexed sequence has efficient \texttt{apply}, \texttt{length}, and (if mutable) \texttt{update} operations. Frequently used linear sequences are \texttt{immutable.List} and \texttt{immutable.Stream}. Frequently used indexed sequences are \texttt{scala.Array} and \texttt{mutable.ArrayBuffer}. The \texttt{Vector} class provides an interesting compromise between indexed and linear access. It has both effectively constant time indexing overhead and constant time linear access overhead. Because of this, vectors are a good foundation for mixed access patterns where both indexed and linear accesses are used. 
 
 \begin{center}
 \captionof{table}{Methods in \texttt{Buffer}}
@@ -241,7 +238,7 @@ Trait \texttt{Seq} has two subtraits \texttt{LinearSeq}, and \texttt{IndexedSeq}
 \textbf{Set operation} & \texttt{xs \& ys, xs intersect ys, xs | ys, xs union ys, xs \&~ ys, xs diff ys}\\
 \noalign{\smallskip}\hline
 \end{tabular}
-Reference: \url{http://docs.scala-lang.org/overviews/collections/sets.html}
+\raggedright{\tiny{Reference: \url{http://docs.scala-lang.org/overviews/collections/sets.html}}}
 \end{center}
 
 Mutable sets offer in addition methods to add, remove, or update elements, which are summarized in below.
@@ -276,7 +273,7 @@ Mutable sets offer in addition methods to add, remove, or update elements, which
 \textbf{Transformation} & \texttt{ms filterKeys p, ms mapValues f}\\
 \noalign{\smallskip}\hline
 \end{tabular}
-Reference: \url{http://docs.scala-lang.org/overviews/collections/maps.html}
+\raggedright{\tiny{Reference: \url{http://docs.scala-lang.org/overviews/collections/maps.html}}}
 \end{center}
 
 \begin{center}
