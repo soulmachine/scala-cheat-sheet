@@ -6,7 +6,8 @@
 \usepackage{hyperref}
 \usepackage{graphicx} % standard LaTeX graphics tool when including figure files
 \graphicspath{{images/}}
-\usepackage{caption}
+\usepackage[font={small}]{caption}
+\captionsetup{aboveskip=3pt}
 
 % To make this come out properly in landscape mode, do one of the following
 % 1.
@@ -103,7 +104,7 @@
 
 \section{Scala Class Hierarchy}
 \begin{center}
-    \includegraphics[scale=.68]{classhierarchy.png}
+    \includegraphics[scale=.69]{classhierarchy.png}
     \captionof{figure}{Scala class hierarchy, source: \url{http://www.scala-lang.org/old/node/128}}
     \label{fig:scala-class-hierarchy}
 \end{center}
@@ -125,13 +126,13 @@
 \end{center}
 
 \begin{center}
-    \includegraphics[scale=.69]{scala-collection-immutable.png}
+    \includegraphics[scale=.70]{scala-collection-immutable.png}
     \captionof{figure}{scala.collection.immutable}
     \label{fig:scala-collection-immutable}
 \end{center}
 
 \begin{center}
-    \includegraphics[scale=.67]{scala-collection-mutable.png}
+    \includegraphics[scale=.68]{scala-collection-mutable.png}
     \captionof{figure}{scala.collection.mutable}
     \label{fig:scala-collection-mutable}
 \end{center}
@@ -189,7 +190,6 @@ In the inheritance hierarchy below \texttt{Iterable} you find three traits: \tex
 
 
 \subsection{Seq}
-All methods in this trait are defined in terms of an an abstract method, \texttt{iterator}, which yields the collection’s elements one by one.
 
 \begin{center}
 \captionof{table}{Methods in \texttt{Seq}}
@@ -310,19 +310,6 @@ Mutable sets offer in addition methods to add, remove, or update elements, which
 \texttt{Queue} & aC & aC & L & L & L & C & - \\
 \texttt{Range} & C & C & C & - & - & - & - \\
 \texttt{String} & C & L & C & L & L & L & - \\
-\noalign{\smallskip}\hline
-\end{tabular}
-\raggedright{\tiny{Reference: \url{http://docs.scala-lang.org/overviews/collections/performance-characteristics.html}}}
-\end{center}
-\endgroup
-
-\begingroup
-\setlength{\tabcolsep}{1pt}
-\begin{center}
-\begin{tabular}{@{}lccccccc@{}}
-\hline\noalign{\smallskip}
- & \textbf{head} & \textbf{tail} & \textbf{apply} & \textbf{update} & \textbf{prepend} & \textbf{append} & \textbf{insert}\\
-\noalign{\smallskip}\hline\noalign{\smallskip}
 \textbf{mutable} &&&&&&& \\				
 \texttt{ArrayBuffer} & C & L & C & C & L & aC & L \\
 \texttt{ListBuffer} & C & L & L & L & C & C & L \\
@@ -390,7 +377,11 @@ These concurrent, and “out-of-order” semantics of parallel collections lead 
 
 
 \subsection{Concrete Parallel Collection Classes}
-\texttt{mutable.ParArray}, \texttt{immutable.ParVector}, \texttt{immutable.ParRange}, \texttt{mutable.ParHashSet}, \texttt{mutable.ParHashMap}, \texttt{mutable.ParTrieMap}
+\texttt{mutable.ParArray}, \texttt{immutable.ParVector}, \texttt{immutable.ParRange}, 
+
+\texttt{mutable.ParHashSet}, \texttt{mutable.ParHashMap}, \texttt{immutable.ParHashSet}, \texttt{immutable.ParHashMap}, 
+
+\texttt{mutable.ParTrieMap}
 
 
 \subsection{Performance characteristics}
@@ -453,7 +444,7 @@ Every sequential collection can be converted to its parallel variant using the \
 
 Other collections, such as lists, queues or streams, are inherently sequential in the sense that the elements must be accessed one after the other. These collections are converted to their parallel variants by copying the elements into a similar parallel collection. For example, a functional list is converted into a standard immutable parallel sequence, which is a parallel vector.
 
-Every parallel collection can be converted to its sequential variant using the seq method. Converting a parallel collection to a sequential collection is always efficient– it takes constant time. Calling seq on a mutable parallel collection yields a sequential collection which is backed by the same store– updates to one collection will be visible in the other one.
+Every parallel collection can be converted to its sequential variant using the \texttt{seq} method. Converting a parallel collection to a sequential collection is always efficient– it takes constant time. Calling seq on a mutable parallel collection yields a sequential collection which is backed by the same store– updates to one collection will be visible in the other one.
 
 
 \subsection{Architecture of the Parallel Collections Library}
@@ -462,14 +453,14 @@ Two core abstractions: \texttt{Splitter}s and \texttt{Combiner}s.
 \textbf{Splitter}
 \begin{verbatim}
 trait Splitter[T] extends Iterator[T] {
-    def split: Seq[Splitter[T]]
+  def split: Seq[Splitter[T]]
 }
 \end{verbatim}
 
 \textbf{Combiner}
 \begin{verbatim}
 trait Combiner[Elem, To] extends Builder[Elem, To] {
-    def combine(other: Combiner[Elem, To]): Combiner[Elem, To]
+  def combine(other: Combiner[Elem, To]): Combiner[Elem, To]
 }
 \end{verbatim}
 
